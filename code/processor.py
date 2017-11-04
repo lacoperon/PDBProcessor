@@ -13,9 +13,9 @@ print(pdb_to_parse)
 
 
 for pdb_filename in pdb_to_parse:
-    # Opens file; line buffering
+    # Opens file; line buffering keeps it efficient and not slow, for large pdbs
     print("Opening " + pdb_filename)
     filedata = open(pdb_filename, "r", 1)
 
     for line in filedata:
-        # print(line)
+        print(line)
