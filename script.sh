@@ -6,7 +6,7 @@
 # Gets into relative directory where script lives
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
     pwd
-cd ../data/pdb_input
+cd ./data/pdb_input
 
 # Checks for pdb_input files,
 # then runs our conversion python script on them
