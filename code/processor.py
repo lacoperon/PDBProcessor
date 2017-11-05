@@ -40,6 +40,8 @@ for pdb_filename in pdb_to_parse:
             if chain_name.strip() is target_chain_name:
                 if current_atom_number >= target_range_start and current_atom_number <= target_range_end:
                     new_file.write(line)
+                if current_atom_number is target_range_end + 1:
+                    new_file.write("TER")
 
 
 
