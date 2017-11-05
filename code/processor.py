@@ -12,14 +12,18 @@ pdb_to_parse = sys.argv[2:]
 
 print(pdb_to_parse)
 
+# Tester variable
+target_chain_name = "A"
+target_range_start = 1
+target_range_end   = 31
+
 
 for pdb_filename in pdb_to_parse:
     # Opens file; line buffering keeps it efficient and not slow, for large pdbs
     print("Opening " + pdb_filename)
     filedata = open(pdb_filename, "r", 1)
     path = "../pdb_output/"
-    new_file = open(path+pdb_filename[0:len(pdb_filename)-4]+"_"+nn+".pdb" , "w")
-
+    new_file = open(pdb_filename[0:len(pdb_filename)-4]+"_"+nn+".pdb" , "w")
     current_atom_number = 1
     current_chain = "CURRENTLY NULL"
     for line in filedata:
@@ -28,12 +32,20 @@ for pdb_filename in pdb_to_parse:
         is_atom = atom_string == "ATOM"
         if is_atom:
             if chain_name != current_chain:
-                new_file.write(chain_name + "\n")
                 print("Last number: " + str(current_atom_number))
                 current_chain = chain_name
                 print("New chain: "   + str(current_chain))
                 current_atom_number = 1
+
+            if chain_name.strip() is target_chain_name:
+                if current_atom_number >= target_range_start and current_atom_number <= target_range_end:
+                    new_file.write(line)
+
+
+
             current_atom_number += 1
+
+
 
     # This happens automatically,
     # but it's good practice -- in case I add more stuff
