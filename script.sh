@@ -17,4 +17,4 @@ done
 
 cd ../../code/
 
-/usr/bin/python3 processor.py ../data/pdb_input/*.pdb
+/usr/bin/python3 processor.py "n1" ../data/pdb_input/*.pdb
