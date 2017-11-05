@@ -23,23 +23,14 @@ for pdb_filename in pdb_to_parse:
         atom_string= line[0:4]
         chain_name = line[72:74]
         is_atom = atom_string == "ATOM"
-        print("is atom? " + str(is_atom))
         if is_atom:
-            if chain_name is not current_chain:
+            if chain_name != current_chain:
                 print("Last number: " + str(current_atom_number))
                 current_chain = chain_name
                 print("New chain: "   + str(current_chain))
                 current_atom_number = 1
-            print("This is touched")
             current_atom_number += 1
 
-
-
-            # print("Atom: " + str(is_atom))
-            # resid_num = line[24:27]
-            # print("Residue: " + resid_num)
-            # chain_name = line[72:74]
-            # print("Chain Name:" + chain_name)
     # This happens automatically,
     # but it's good practice -- in case I add more stuff
     filedata.close()
