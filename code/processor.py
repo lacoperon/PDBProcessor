@@ -1,5 +1,6 @@
 # PYTHON 3
 import sys
+import csv
 
 if len(sys.argv) < 3:
     print("ERROR: No filename(s) specified. Try again, specifying file(s) to parse")
@@ -57,22 +58,28 @@ def residNumToString(num):
 
 #TODO: Fix artificial picking of .pdb structures to parse
 pdb_to_parse = ["../data/pdb_input/5jup.pdb"]
-for pdb_filename in pdb_to_parse:
 
-    structure_inputs = (
-        {"chain_name": "A",
-         "region_start": 1,
-         "region_end" : 31},
-        {"chain_name": "A",
-         "region_start": 547,
-         "region_end" : 600},
-        {"chain_name": "A",
-         "region_start": 1108,
-         "region_end" : 1113},
-        {"chain_name": "A",
-         "region_start": 1133,
-         "region_end" : 1140}
-    )
+with open('../config/n1.csv', mode='r') as infile:
+    reader = csv.reader(infile)
+    isHeader = True
+
+    structure_inputs = []
+
+    for row in reader:
+        if isHeader:
+            isHeader = False
+        else:
+            current_dict = {}
+            current_dict["chain_name"] = row[0]
+            current_dict["region_start"] = int(row[1])
+            current_dict["region_end"] = int(row[2])
+            structure_inputs.append(current_dict)
+
+    print(structure_inputs)
+
+
+
+for pdb_filename in pdb_to_parse:
 
     current_region = 0
     target_chain_name = structure_inputs[current_region]["chain_name"]
@@ -106,8 +113,9 @@ for pdb_filename in pdb_to_parse:
             if chain_name != current_chain:
                 # print("Last number: " + str(current_atom_number))
                 current_chain = chain_name
+                print(current_chain)
                 # print("New chain: "   + str(current_chain))
-                current_atom_number = 1
+                # current_atom_number = 1
 
             if chain_name.strip() is target_chain_name:
                 if rb_num >= target_range_start and rb_num <= target_range_end:
