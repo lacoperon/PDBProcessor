@@ -17,6 +17,8 @@ cd ./data/pdb_input
 
 cd ../../code/
 
+# Runs pdb processor for neighbourhood "n1", for all pdb files in pdb_input folder
 /usr/bin/python3 processor.py "n1" ../data/pdb_input/*.pdb
 
-/usr/bin/python3 checkForInconsistencies.py 5jup_actual_selection.pdb 5jup_n1.pdb
+# Can run 'check' script, against hand-picked script
+# /usr/bin/python3 checkForInconsistencies.py 5jup_actual_selection.pdb 5jup_n1.pdb
