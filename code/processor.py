@@ -59,8 +59,11 @@ def residNumToString(num):
 #TODO: Fix artificial picking of .pdb structures to parse
 pdb_filenames = ["5jup.pdb"]
 # pdb_to_parse = ["../data/pdb_input/5jup.pdb"]
+print(">>>>>PDB Parser Script Running")
+neighbourhood_file = "../config/" + nn +".csv"
+print("Using neighbourhood: " + nn)
 
-with open('../config/n1.csv', mode='r') as infile:
+with open(neighbourhood_file, mode='r') as infile:
     reader = csv.reader(infile)
     isHeader = True
 
@@ -76,13 +79,11 @@ with open('../config/n1.csv', mode='r') as infile:
             current_dict["region_end"] = int(row[2])
             structure_inputs.append(current_dict)
 
-    print(structure_inputs)
-
 
 
 for pdb_filename in pdb_filenames:
     pdb_no_ext = pdb_filename
-    pdb_filename = "../data/pdb_input/" + pdb_filename
+    pdb_w_ext = "../data/pdb_input/" + pdb_filename
 
     current_region = 0
     target_chain_name = structure_inputs[current_region]["chain_name"]
@@ -90,8 +91,8 @@ for pdb_filename in pdb_filenames:
     target_range_end   = structure_inputs[current_region]["region_end"]
 
     # Opens file; line buffering keeps it efficient and not slow, for large pdbs
-    print("Opening " + pdb_filename)
-    filedata = open(pdb_filename, "r", 1)
+    print("Opening " + pdb_no_ext)
+    filedata = open(pdb_w_ext, "r", 1)
     path = "../data/pdb_output/"
     new_file = open(path + pdb_no_ext[:len(pdb_no_ext)-4] +"_"+ nn + ".pdb" , "w")
 
@@ -100,8 +101,10 @@ for pdb_filename in pdb_filenames:
     current_atom_number = 1
     current_chain = "CURRENTLY NULL"
 
+    is_last = False
+
     for i in structure_inputs:
-        print(i["chain_name"] + "from " + str(i["region_start"]) +" to "+ str(i["region_end"]))
+        print(">>>Currently parsing chain " + i["chain_name"].ljust(3) + " from " + str(i["region_start"]).ljust(5) +" to "+ str(i["region_end"]).ljust(5))
 
 
     for line in filedata:
@@ -133,10 +136,8 @@ for pdb_filename in pdb_filenames:
                 # Edge case to deal with : end of chain is in our subset -- not dealt with yet
                 if rb_num == (target_range_end + 1):
                     atom_num = atomNumToString(current_atom_number)
-                    ter_line = "TER" + (" " * 3) + atomNumToString(atom_num_counter)
+                    ter_line = "TER" + str(atom_num_counter).rjust(8)
                     ter_line += " " * 6 + last_type_nick + residNumToString(last_rbnum) + "\n"
-                    # print(written_atom_num)
-                    # print(ter_line)
                     current_region += 1
                     if current_region < len(structure_inputs):
                         target_chain_name = structure_inputs[current_region]["chain_name"]
@@ -157,15 +158,11 @@ for pdb_filename in pdb_filenames:
 
         is_ter = line[0:3] == "TER"
         if is_ter:
-            print(line)
             if chain_name.strip() == target_chain_name.strip():
-                # Edge case to deal with : end of chain is in our subset -- not dealt with yet
                 if rb_num == target_range_end :
                     atom_num = atomNumToString(current_atom_number)
-                    ter_line = "TER" + (" " * 2) + atomNumToString(atom_num_counter)
-                    ter_line += " " * 7 + last_type_nick + residNumToString(rb_num) + "\n"
-                    # print(written_atom_num)
-                    # print(ter_line)
+                    ter_line = "TER" + str(atom_num_counter).rjust(8)
+                    ter_line += " " * 6 + last_type_nick + residNumToString(last_rbnum) + "\n"
                     current_region += 1
                     if current_region < len(structure_inputs):
                         target_chain_name = structure_inputs[current_region]["chain_name"]
@@ -185,5 +182,15 @@ for pdb_filename in pdb_filenames:
 
     # This happens automatically,
     # but it's good practice -- in case I add more stuff
-    filedata.close()
     new_file.close()
+
+# Opens file, and removes the last line (IE the last TER, which is unnecessary)
+path = "../data/pdb_output/"
+new_file = open(path + pdb_no_ext[:len(pdb_no_ext)-4] +"_"+ nn + ".pdb")
+lines = new_file.readlines()
+w = open(path + pdb_no_ext[:len(pdb_no_ext)-4] +"_"+ nn + ".pdb",'w')
+w.writelines(item for item in lines[:-1])
+
+# Writes 'END' at the end of file (canonical PDB end line)
+w.write("END")
+w.close()
