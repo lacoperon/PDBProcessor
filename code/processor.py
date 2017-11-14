@@ -105,8 +105,8 @@ for pdb_filename in pdb_filenames:
 
 
     for line in filedata:
-        atom_string= line[0:4]
-        is_atom = atom_string == "ATOM"
+        atom_string= line[0:6]
+        is_atom = atom_string.strip() == "ATOM" or atom_string.strip() == "HETATM"
         if is_atom:
             chain_name = line[72:74]
             # print(chain_name)
@@ -163,7 +163,7 @@ for pdb_filename in pdb_filenames:
                 if rb_num == target_range_end :
                     atom_num = atomNumToString(current_atom_number)
                     ter_line = "TER" + (" " * 2) + atomNumToString(atom_num_counter)
-                    ter_line += " " * 7 + last_type_nick + residNumToString(rb_num-1) + "\n"
+                    ter_line += " " * 7 + last_type_nick + residNumToString(rb_num) + "\n"
                     # print(written_atom_num)
                     # print(ter_line)
                     current_region += 1
