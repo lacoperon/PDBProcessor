@@ -8,6 +8,12 @@ if len(sys.argv) < 3:
 
 nn = sys.argv[1]
 pdb_to_parse = sys.argv[2:]
+pdb_list = []
+for filename in pdb_to_parse:
+    path = filename.split("/")
+    pdb_list.append(path[len(path)-1])
+
+print(pdb_list)
 
 # pdb_to_parse = ["../data/pdb_input" + f for f in pdb_to_parse]
 
@@ -57,7 +63,7 @@ def residNumToString(num):
 
 
 #TODO: Fix artificial picking of .pdb structures to parse
-pdb_filenames = ["5jup.pdb"]
+pdb_filenames = pdb_list
 # pdb_to_parse = ["../data/pdb_input/5jup.pdb"]
 print(">>>>>PDB Parser Script Running")
 neighbourhood_file = "../config/" + nn +".csv"
