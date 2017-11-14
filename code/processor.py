@@ -101,8 +101,6 @@ for pdb_filename in pdb_filenames:
     current_atom_number = 1
     current_chain = "CURRENTLY NULL"
 
-    is_last = False
-
     for i in structure_inputs:
         print(">>>Currently parsing chain " + i["chain_name"].ljust(3) + " from " + str(i["region_start"]).ljust(5) +" to "+ str(i["region_end"]).ljust(5))
 
