@@ -18,3 +18,5 @@ cd ./data/pdb_input
 cd ../../code/
 
 /usr/bin/python3 processor.py "n1" ../data/pdb_input/*.pdb
+
+/usr/bin/python3 checkForInconsistencies.py 5jup_actual_selection.pdb 5jup_n1.pdb
