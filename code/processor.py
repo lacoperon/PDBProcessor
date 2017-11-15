@@ -15,12 +15,6 @@ for filename in pdb_to_parse:
 
 print(pdb_list)
 
-# pdb_to_parse = ["../data/pdb_input" + f for f in pdb_to_parse]
-
-
-
-
-
 
 # function which converts a num to a length 5 atom number
 # OR RESIDUE
@@ -62,9 +56,8 @@ def residNumToString(num):
         return "9999"
 
 
-#TODO: Fix artificial picking of .pdb structures to parse
 pdb_filenames = pdb_list
-# pdb_to_parse = ["../data/pdb_input/5jup.pdb"]
+
 print(">>>>>PDB Parser Script Running")
 neighbourhood_file = "../config/" + nn +".csv"
 print("Using neighbourhood: " + nn)
@@ -116,7 +109,7 @@ for pdb_filename in pdb_filenames:
         is_atom = atom_string.strip() == "ATOM" or atom_string.strip() == "HETATM"
         if is_atom:
             chain_name = line[72:74]
-            # print(chain_name)
+
             # defines residue/base number
             rb_num = int(line[22:26])
             # string with resid/base type, chain nickname
@@ -125,19 +118,14 @@ for pdb_filename in pdb_filenames:
             written_atom_num = int(line[8:12])
 
             if chain_name.strip() != current_chain.strip:
-                # print("Last number: " + str(current_atom_number))
                 current_chain = chain_name.strip()
-                # print(current_chain)
-                # print("New chain: "   + str(current_chain))
-                # current_atom_number = 1
 
             if chain_name.strip() == target_chain_name.strip():
-                # print("TRUE" + chain_name)
                 if rb_num >= target_range_start and rb_num <= target_range_end:
                     line = line[0:6] + atomNumToString(atom_num_counter) + line[11:]
                     new_file.write(line)
                     atom_num_counter += 1
-                # Edge case to deal with : end of chain is in our subset -- not dealt with yet
+
                 if rb_num == (target_range_end + 1):
                     atom_num = atomNumToString(current_atom_number)
                     ter_line = "TER" + str(atom_num_counter).rjust(8)
