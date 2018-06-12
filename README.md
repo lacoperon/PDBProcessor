@@ -19,10 +19,10 @@ so is unimplemented.
 
 ### Protein Input files
 
-Put all pdb_formatted files to be converted into `/data/pdb_input/`. The script
-`code/processor.py` will automatically be run for each pdb file in this folder,
+Put all PDB_formatted files to be converted into `/data/PDB_input/`. The script
+`code/processor.py` will automatically be run for each PDB file in this folder,
 and will output a file appended with the neighbourhood name at the end within
-`data/pdb_output`.
+`data/PDB_output`.
 
 ### Configuration File
 
@@ -34,10 +34,10 @@ An example csv is shown in `config/n1.csv`. Note the three columns,
 ### Where does the output go?
 
 The output of the script goes to `/data/output/`, and the name of the
-outputted file will correspond to the original pdb name, with the name of the
+outputted file will correspond to the original PDB name, with the name of the
 'neighbourhood' of pruning applied to the end.
 
-IE `5jup_n1.pdb` or `5jup_neighbourhood2.pdb`, or whatever is the desired extension.
+IE `5jup_n1.PDB` or `5jup_neighbourhood2.PDB`, or whatever is the desired extension.
 
 ## How do I run the script?
 
@@ -47,7 +47,7 @@ Then, run `./script.sh` to execute the script.
 ## Error Checking
 
 I also wrote a script, `code/checkForInconsistencies.py`, which compares two
-pdb files (IE one picked by hand, and one parsed by `code/processor.py`), and
+PDB files (IE one picked by hand, and one parsed by `code/processor.py`), and
 prints out when and where errors are found. You can use this to check that the
 script runs as expected.
 
