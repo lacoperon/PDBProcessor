@@ -19,38 +19,18 @@ print(pdb_list)
 # function which converts a num to a length 5 atom number
 # OR RESIDUE
 def atomNumToString(num):
-    if 0 <= num and num < 10:
-        return "    " + str(num)
 
-    if 10 <= num and num < 100:
-        return "   " + str(num)
-
-    if 100 <= num and num < 1000:
-        return "  " + str(num)
-
-    if num >= 1000 and num < 10000:
-        return " " + str(num)
-
-    if num >= 10000 and num < 100000:
-        return str(num)
-
+    if 0 <= num and num < 100000:
+        return "{:5d}".format(num)
     else:
         return "99999"
 
 # function which converts a num to a length 4 atom number
 # OR RESIDUE
 def residNumToString(num):
-    if 0 <= num and num < 10:
-        return "   " + str(num)
 
-    if 10 <= num and num < 100:
-        return "  " + str(num)
-
-    if 100 <= num and num < 1000:
-        return " " + str(num)
-
-    if num >= 1000 and num < 10000:
-        return str(num)
+    if 0 <= num and num < 10000:
+        return "{:4d}".format(num)
 
     else:
         return "9999"
