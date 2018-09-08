@@ -17,7 +17,7 @@ cd ./data/pdb_input
 
 cd ../../code/
 
-# Runs pdb processor for neighbourhood "n1", for all pdb files in pdb_input folder
+# Runs pdb processor for neighbourhood "n1_new", for all pdb files in pdb_input folder
 /usr/bin/python3 processor.py "n1" ../data/pdb_input/*.pdb
 
 # Can run 'check' script, against hand-picked script

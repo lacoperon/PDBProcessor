@@ -71,11 +71,10 @@ for pdb_filename in pdb_filenames:
 
     # Opens file; line buffering keeps it efficient and not slow, for large pdbs
     print("Opening " + pdb_no_ext)
-    filedata = open(pdb_w_ext, "r", 1)
+    filedata = open(pdb_w_ext, "r", 1).readlines()
     path = "../data/pdb_output/"
     new_file = open(path + pdb_no_ext[:len(pdb_no_ext)-4] +"_"+ nn + ".pdb" , "w")
 
-    current_region = 0
     atom_num_counter = 1
     current_atom_number = 1
     current_chain = "CURRENTLY NULL"
@@ -84,76 +83,72 @@ for pdb_filename in pdb_filenames:
         print(">>>Currently parsing chain " + i["chain_name"].ljust(3) + " from " + str(i["region_start"]).ljust(5) +" to "+ str(i["region_end"]).ljust(5))
 
 
-    for line in filedata:
-        atom_string= line[0:6]
-        is_atom = atom_string.strip() == "ATOM" or atom_string.strip() == "HETATM"
-        if is_atom:
-            chain_name = line[72:74]
+    while target_chain_name != "all_chains_represented":
+        for line in filedata:
+            atom_string= line[0:6]
+            is_atom = atom_string.strip() == "ATOM" or atom_string.strip() == "HETATM"
+            if is_atom:
+                chain_name = line[72:74]
 
-            # defines residue/base number
-            rb_num = int(line[22:26])
-            # string with resid/base type, chain nickname
-            type_nick = line[17:22]
-            # written atom num
-            written_atom_num = int(line[8:12])
+                # defines residue/base number
+                rb_num = int(line[22:26])
+                # string with resid/base type, chain nickname
+                type_nick = line[17:22]
+                # written atom num
+                written_atom_num = int(line[8:12])
 
-            if chain_name.strip() != current_chain.strip:
-                current_chain = chain_name.strip()
+                if chain_name.strip() != current_chain.strip:
+                    current_chain = chain_name.strip()
 
-            if chain_name.strip() == target_chain_name.strip():
-                if rb_num >= target_range_start and rb_num <= target_range_end:
-                    line = line[0:6] + atomNumToString(atom_num_counter) + line[11:]
-                    new_file.write(line)
-                    atom_num_counter += 1
+                if chain_name.strip() == target_chain_name.strip():
+                    if rb_num >= target_range_start and rb_num <= target_range_end:
+                        line = line[0:6] + atomNumToString(atom_num_counter) + line[11:]
+                        new_file.write(line)
+                        atom_num_counter += 1
 
-                if rb_num == (target_range_end + 1):
-                    atom_num = atomNumToString(current_atom_number)
-                    ter_line = "TER" + str(atom_num_counter).rjust(8)
-                    ter_line += " " * 6 + last_type_nick + residNumToString(last_rbnum) + "\n"
-                    current_region += 1
-                    if current_region < len(structure_inputs):
-                        target_chain_name = structure_inputs[current_region]["chain_name"]
-                        target_range_start = structure_inputs[current_region]["region_start"]
-                        target_range_end   = structure_inputs[current_region]["region_end"]
-                    else:
-                        target_chain_name = "all_chains_represented"
-                        target_range_start = -1
-                        target_range_end   = -1
+                    if rb_num == (target_range_end + 1):
+                        atom_num = atomNumToString(current_atom_number)
+                        ter_line = "TER" + str(atom_num_counter).rjust(8)
+                        ter_line += " " * 6 + last_type_nick + residNumToString(last_rbnum) + "\n"
+                        current_region += 1
+                        if current_region < len(structure_inputs):
+                            target_chain_name = structure_inputs[current_region]["chain_name"]
+                            target_range_start = structure_inputs[current_region]["region_start"]
+                            target_range_end   = structure_inputs[current_region]["region_end"]
+                        else:
+                            target_chain_name = "all_chains_represented"
+                            target_range_start = -1
+                            target_range_end   = -1
 
-                    new_file.write(ter_line)
-                    atom_num_counter += 1
+                        new_file.write(ter_line)
+                        atom_num_counter += 1
 
-            current_atom_number += 1
-            last_type_nick = type_nick
-            last_rbnum = rb_num
+                current_atom_number += 1
+                last_type_nick = type_nick
+                last_rbnum = rb_num
 
+            if line[0:3] == "TER":
+                if chain_name.strip() == target_chain_name.strip():
+                    if rb_num == target_range_end :
+                        atom_num = atomNumToString(current_atom_number)
+                        ter_line = "TER" + str(atom_num_counter).rjust(8)
+                        ter_line += " " * 6 + last_type_nick + residNumToString(last_rbnum) + "\n"
+                        current_region += 1
+                        if current_region < len(structure_inputs):
+                            target_chain_name = structure_inputs[current_region]["chain_name"]
+                            target_range_start = structure_inputs[current_region]["region_start"]
+                            target_range_end   = structure_inputs[current_region]["region_end"]
+                        else:
+                            target_chain_name = "all_chains_represented"
+                            target_range_start = -1
+                            target_range_end   = -1
 
-        is_ter = line[0:3] == "TER"
-        if is_ter:
-            if chain_name.strip() == target_chain_name.strip():
-                if rb_num == target_range_end :
-                    atom_num = atomNumToString(current_atom_number)
-                    ter_line = "TER" + str(atom_num_counter).rjust(8)
-                    ter_line += " " * 6 + last_type_nick + residNumToString(last_rbnum) + "\n"
-                    current_region += 1
-                    if current_region < len(structure_inputs):
-                        target_chain_name = structure_inputs[current_region]["chain_name"]
-                        target_range_start = structure_inputs[current_region]["region_start"]
-                        target_range_end   = structure_inputs[current_region]["region_end"]
-                    else:
-                        target_chain_name = "all_chains_represented"
-                        target_range_start = -1
-                        target_range_end   = -1
+                        new_file.write(ter_line)
+                        atom_num_counter += 1
 
-                    new_file.write(ter_line)
-                    atom_num_counter += 1
+                current_atom_number += 1
+                last_type_nick = type_nick
 
-            current_atom_number += 1
-            last_type_nick = type_nick
-
-
-    # This happens automatically,
-    # but it's good practice -- in case I add more stuff
     new_file.close()
 
 # Opens file, and removes the last line (IE the last TER, which is unnecessary)
